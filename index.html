@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <meta charset="UTF-8">
-
 <title>Milley Chatbot</title>
 
 <style>
 
 body {
     margin:0;
-    font-family: Arial, sans-serif;
+    font-family:Arial, sans-serif;
     background:#fff3e6;
     display:flex;
     justify-content:center;
@@ -25,7 +23,7 @@ body {
     background:white;
     border-radius:25px;
     padding:20px;
-    box-shadow:0px 0px 25px #cfcfcf;
+    box-shadow:0 0 25px #cfcfcf;
     display:flex;
     flex-direction:column;
 }
@@ -119,37 +117,31 @@ placeholder="Ask about cookies..."
 onkeydown="if(event.key==='Enter') sendMessage()"
 >
 
-<button onclick="sendMessage()">
-Send
-</button>
+<button onclick="sendMessage()">Send</button>
 
 </div>
 
 </div>
+
 
 
 <script>
 
-
 async function sendMessage(){
-
 
 let input = document.getElementById("input");
 
 let text = input.value.trim();
 
-
 if(text===""){
-return;
+    return;
 }
 
 
 let messages = document.getElementById("messages");
 
 
-messages.innerHTML +=
-
-`
+messages.innerHTML += `
 <div class="user">
 ${text}
 </div>
@@ -173,45 +165,40 @@ headers:{
 },
 
 body:JSON.stringify({
-
 message:text
-
 })
 
 }
-
 );
 
 
 let data = await response.json();
 
 
-let botReply = data.reply || data.response || data.answer;
+let answer = 
+data.reply || 
+data.response || 
+data.answer || 
+data.message || 
+"Sorry, I couldn't understand 😅";
 
 
-messages.innerHTML +=
-
-`
+messages.innerHTML += `
 <div class="bot">
-🍪 ${botReply}
+🍪 ${answer}
 </div>
 `;
 
 
 }
 
-
 catch(error){
 
-
-messages.innerHTML +=
-
-`
+messages.innerHTML += `
 <div class="bot">
 Server not connected 😅
 </div>
 `;
-
 
 }
 
@@ -221,10 +208,8 @@ messages.scrollTop = messages.scrollHeight;
 
 }
 
-
 </script>
 
 
 </body>
-
 </html>
