@@ -7,69 +7,73 @@ import google.generativeai as genai
 import os
 from datetime import datetime
 
-
 load_dotenv()
 
-
 app = FastAPI(title="Milley Cookie Chatbot API")
-
 
 # CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-# Gemini
-genai.configure(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
+# Gemini setup
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 model = genai.GenerativeModel(
     "gemini-2.5-flash"
 )
 
 
-sessions = {}
-
-
 KNOWLEDGE_BASE = """
-Milley Cookies 🍪
 
-Products:
+MILLEY COOKIES MENU 🍪
 
-Classic Choco Chip
-6 cookies - ₹299
-12 cookies - ₹549
+Classic Choco Chip:
+6 cookies ₹299
+12 cookies ₹549
 
-Salted Caramel
-6 cookies - ₹349
-12 cookies - ₹649
+Salted Caramel:
+6 cookies ₹349
+12 cookies ₹649
 
-Red Velvet
-6 cookies - ₹349
-12 cookies - ₹649
+Red Velvet:
+6 cookies ₹349
+12 cookies ₹649
 
-Double Choc Fudge
-6 cookies - ₹379
-12 cookies - ₹699
+Double Choc Fudge:
+6 cookies ₹379
+12 cookies ₹699
 
-Rainbow Funfetti
-6 cookies - ₹329
+Rainbow Funfetti:
+6 cookies ₹329
+12 cookies ₹599
 
-Party Mix Box
-24 cookies - ₹999
+Party Mix Box:
+24 assorted cookies ₹999
+Best for birthdays and parties 🎉
 
-Choc Luxe Gift Box
-₹1199
+Choc Luxe Gift Box:
+12 premium cookies ₹1199
+Best for gifting 🎁
 
-Recommendations:
+
+ADD ONS:
+Message card ₹49
+Gift ribbon ₹79
+Express delivery ₹99
+
+
+RECOMMENDATIONS:
 
 Birthday:
 Party Mix Box
+
+Gift:
+Choc Luxe Gift Box + message card
 
 Kids:
 Rainbow Funfetti
@@ -77,35 +81,44 @@ Rainbow Funfetti
 Chocolate lovers:
 Double Choc Fudge
 
-Gift:
-Choc Luxe Gift Box
+Budget:
+Classic Choco Chip
 
-All cookies are eggless.
 
-Delivery:
-Delhi, Mumbai, Bangalore, Pune.
+DELIVERY:
 
-First order discount:
-MILLEY10
+Available in:
+Delhi
+Mumbai
+Bangalore
+Pune
+
+Same day delivery before 12 PM
+
+Free delivery above ₹799
+Otherwise ₹59
+
+
+OFFERS:
+
+Use MILLEY10 for 10% off first order
+
+All cookies are eggless and made with Belgian chocolate.
+
 """
 
 
 SYSTEM_PROMPT = f"""
 
-You are Milley 🍪
-
-You are a friendly cookie assistant.
+You are Milley 🍪, the official assistant for Milley Cookies.
 
 Rules:
-
-- Reply like a human
-- Short answers
+- Talk like a friendly cookie expert
+- Keep replies short
 - Use emojis
 - Never say you are AI
-- Recommend cookies
-- Help customer order
-
-Knowledge:
+- Recommend cookies based on user needs
+- Use ONLY this information:
 
 {KNOWLEDGE_BASE}
 
@@ -117,16 +130,10 @@ class ChatRequest(BaseModel):
     message: str
 
 
-class ChatResponse(BaseModel):
-    reply: str
-    session_id: str
-
-
-
 @app.get("/")
 def home():
     return {
-        "status":"Milley running 🍪"
+        "status": "Milley running 🍪"
     }
 
 
@@ -136,31 +143,28 @@ def chat(req: ChatRequest):
 
     try:
 
-        prompt = SYSTEM_PROMPT + """
-
-Customer:
-""" + req.message
-
+        prompt = SYSTEM_PROMPT + "\nCustomer: " + req.message
 
         response = model.generate_content(prompt)
 
-
         return {
-            "reply": response.text,
-            "session_id": req.session_id
+            "reply": response.text
         }
 
 
     except Exception as e:
+
         raise HTTPException(
             status_code=500,
             detail=str(e)
         )
 
 
+
 @app.get("/health")
 def health():
+
     return {
         "status":"ok",
-        "time":datetime.now()
+        "time":datetime.now().isoformat()
     }
