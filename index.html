@@ -1,101 +1,160 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <meta charset="UTF-8">
+
 <title>Milley Chatbot</title>
+
 
 <style>
 
-body {
+body{
     margin:0;
     font-family:Arial, sans-serif;
     background:#fff3e6;
+    height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
 }
 
-.chatbox {
+
+.chatbox{
+
     width:420px;
     height:600px;
     background:white;
     border-radius:25px;
     padding:20px;
     box-shadow:0 0 25px #cfcfcf;
+
     display:flex;
     flex-direction:column;
+
 }
 
-h2 {
+
+h2{
     text-align:center;
     color:#5c2c06;
 }
 
-#messages {
+
+#messages{
+
     flex:1;
+
     border:1px solid #ddd;
+
     padding:15px;
+
     overflow-y:auto;
+
     border-radius:15px;
+
     background:#fffaf5;
+
 }
 
-.user {
+
+.user{
+
     text-align:right;
-    color:white;
+
     background:#ff8c42;
-    padding:10px;
-    margin:10px;
-    border-radius:15px;
-}
 
-.bot {
-    text-align:left;
-    color:#5c2c06;
-    background:#f4e1d2;
-    padding:10px;
-    margin:10px;
-    border-radius:15px;
-}
-
-.input-area {
-    display:flex;
-    gap:10px;
-    margin-top:15px;
-}
-
-input {
-    flex:1;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #ccc;
-    font-size:15px;
-}
-
-button {
-    padding:12px 18px;
-    border:none;
-    background:#d2691e;
     color:white;
-    border-radius:10px;
-    cursor:pointer;
+
+    padding:10px;
+
+    margin:10px;
+
+    border-radius:15px;
+
 }
 
-button:hover {
-    background:#9c4a10;
+
+.bot{
+
+    text-align:left;
+
+    background:#f4e1d2;
+
+    color:#5c2c06;
+
+    padding:10px;
+
+    margin:10px;
+
+    border-radius:15px;
+
 }
+
+
+.input-area{
+
+    display:flex;
+
+    gap:10px;
+
+    margin-top:15px;
+
+}
+
+
+input{
+
+    flex:1;
+
+    padding:12px;
+
+    border-radius:10px;
+
+    border:1px solid #ccc;
+
+    font-size:15px;
+
+}
+
+
+button{
+
+    padding:12px 18px;
+
+    border:none;
+
+    background:#d2691e;
+
+    color:white;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+
+button:hover{
+
+    background:#9c4a10;
+
+}
+
 
 </style>
 
+
 </head>
+
 
 
 <body>
 
 
 <div class="chatbox">
+
 
 <h2>🍪 Milley Assistant</h2>
 
@@ -109,107 +168,175 @@ Hi 👋 I'm Milley! Tell me what cookies you're looking for 🍪
 </div>
 
 
+
 <div class="input-area">
 
-<input 
+
+<input
+
 id="input"
+
 placeholder="Ask about cookies..."
+
 onkeydown="if(event.key==='Enter') sendMessage()"
+
 >
 
-<button onclick="sendMessage()">Send</button>
+
+<button onclick="sendMessage()">
+
+Send
+
+</button>
+
 
 </div>
 
+
 </div>
+
+
 
 
 
 <script>
 
+
 async function sendMessage(){
+
 
 let input = document.getElementById("input");
 
 let text = input.value.trim();
 
+
 if(text===""){
-    return;
+
+return;
+
 }
+
 
 
 let messages = document.getElementById("messages");
 
 
+
 messages.innerHTML += `
+
 <div class="user">
+
 ${text}
+
 </div>
+
 `;
+
 
 
 input.value="";
 
 
+
+
 try{
 
 
+
 let response = await fetch(
+
 "https://milley-chatbot.onrender.com/chat",
+
 {
 
 method:"POST",
 
 headers:{
+
 "Content-Type":"application/json"
+
 },
 
+
 body:JSON.stringify({
+
 message:text
+
 })
 
+
 }
+
 );
+
 
 
 let data = await response.json();
 
 
-let answer = 
-data.reply || 
-data.response || 
-data.answer || 
-data.message || 
-"Sorry, I couldn't understand 😅";
+
+console.log(data);
+
+
+
+let answer = data.reply;
+
 
 
 messages.innerHTML += `
+
 <div class="bot">
+
 🍪 ${answer}
+
 </div>
+
 `;
 
 
+
 }
+
+
 
 catch(error){
 
+
+
+console.log(error);
+
+
+
 messages.innerHTML += `
+
 <div class="bot">
+
 Server not connected 😅
+
 </div>
+
 `;
 
+
+
 }
+
+
 
 
 messages.scrollTop = messages.scrollHeight;
 
 
+
 }
+
+
 
 </script>
 
 
+
 </body>
+
+
 </html>
