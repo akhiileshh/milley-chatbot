@@ -19,9 +19,7 @@ body {
     height:100vh;
 }
 
-
 .chatbox {
-
     width:420px;
     height:600px;
     background:white;
@@ -30,94 +28,68 @@ body {
     box-shadow:0px 0px 25px #cfcfcf;
     display:flex;
     flex-direction:column;
-
 }
-
 
 h2 {
-
     text-align:center;
     color:#5c2c06;
-
 }
 
-
 #messages {
-
     flex:1;
     border:1px solid #ddd;
     padding:15px;
     overflow-y:auto;
     border-radius:15px;
     background:#fffaf5;
-
 }
 
-
 .user {
-
     text-align:right;
     color:white;
     background:#ff8c42;
     padding:10px;
     margin:10px;
     border-radius:15px;
-
 }
 
-
 .bot {
-
     text-align:left;
     color:#5c2c06;
     background:#f4e1d2;
     padding:10px;
     margin:10px;
     border-radius:15px;
-
 }
 
-
 .input-area {
-
     display:flex;
     gap:10px;
     margin-top:15px;
-
 }
 
-
 input {
-
     flex:1;
     padding:12px;
     border-radius:10px;
     border:1px solid #ccc;
     font-size:15px;
-
 }
 
-
 button {
-
     padding:12px 18px;
     border:none;
     background:#d2691e;
     color:white;
     border-radius:10px;
     cursor:pointer;
-
 }
 
-
 button:hover {
-
     background:#9c4a10;
-
 }
 
 </style>
-
 
 </head>
 
@@ -127,17 +99,14 @@ button:hover {
 
 <div class="chatbox">
 
-
 <h2>🍪 Milley Assistant</h2>
 
 
 <div id="messages">
 
-
 <div class="bot">
 Hi 👋 I'm Milley! Tell me what cookies you're looking for 🍪
 </div>
-
 
 </div>
 
@@ -150,17 +119,13 @@ placeholder="Ask about cookies..."
 onkeydown="if(event.key==='Enter') sendMessage()"
 >
 
-
 <button onclick="sendMessage()">
 Send
 </button>
 
-
 </div>
 
-
 </div>
-
 
 
 <script>
@@ -172,6 +137,7 @@ async function sendMessage(){
 let input = document.getElementById("input");
 
 let text = input.value.trim();
+
 
 if(text===""){
 return;
@@ -193,12 +159,11 @@ ${text}
 input.value="";
 
 
-
 try{
 
 
 let response = await fetch(
-"http://localhost:8000/chat",
+"https://milley-chatbot.onrender.com/chat",
 {
 
 method:"POST",
@@ -218,9 +183,7 @@ message:text
 );
 
 
-
 let data = await response.json();
-
 
 
 messages.innerHTML +=
@@ -230,7 +193,6 @@ messages.innerHTML +=
 🍪 ${data.reply}
 </div>
 `;
-
 
 
 }
@@ -251,19 +213,15 @@ Server not connected 😅
 }
 
 
-
 messages.scrollTop = messages.scrollHeight;
 
 
 }
 
 
-
 </script>
 
 
-
 </body>
-
 
 </html>
